@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Bầu Cử Tổng Thống</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #F5F5DC;
+    }
+
+    #connect-button, #add-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #connect-button:hover, #add-button:hover {
+      background-color: #0056b3;
+    }
+
+    #wallet-address {
+      margin: 20px 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .voting-form {
+      width: 300px;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      background-color: white;
+    }
+
+    .candidate-list {
+      margin: 20px 0;
+    }
+
+    .candidate {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background-color: #fff;
+    }
+
+    .candidate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .candidate-header span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    #vote-button {
+      padding: 5px 15px;
+      font-size: 20px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #vote-button:hover {
+      background-color: darkgreen;
+    }
+    #show-button{
+      padding: 5px 15px;
+      font-size: 20px;
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #delete-button {
+      padding: 5px 15px;
+      font-size: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-right:200px;
+    }
+
+    #delete-button:hover {
+      background-color: darkred;
+    }
+
+    #add-candidate-form {
+      display: none;
+      margin-top: 20px;
+      width: 300px;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: white;
+    }
+
+    #add-candidate-form input {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #add-candidate-form button {
+      padding: 8px 20px;
+      margin: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    #cancel-button {
+      background-color: red;
+      color: white;
+      border: none;
+    }
+
+    #cancel-button:hover {
+      background-color: darkred;
+    }
+
+    #confirm-add-button {
+      background-color: green;
+      color: white;
+      border: none;
+    }
+
+    #confirm-add-button:hover {
+      background-color: darkgreen;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="connect-button">Connect Wallet</button>
+  <div id="wallet-address">Địa chỉ ví: ...</div>
+  <button id="add-button">Thêm ứng cử viên</button>
+
+  <div id="add-candidate-form">
+    <h3>Thêm Ứng Cử Viên</h3>
+    <input type="text" id="candidate-name" placeholder="Tên ứng cử viên">
+    <input type="text" id="candidate-id" placeholder="ID ứng cử viên">
+    <button id="cancel-button">Cancel</button>
+    <button id="confirm-add-button">Add</button>
+  </div>
+
+  <div class="voting-form">
+    <h3>Bầu Cử Tổng Thống</h3>
+    <div class="candidate-list">
+      <div class="candidate">
+        <div class="candidate-header">
+          <span>Tên ứng viên 1</span>
+          <button id="vote-button">Vote</button>
+        </div>
+        <button id="delete-button">Delete</button>
+      </div>
+    </div>
+  </div>
+  <button id = "show-button"> show</button>
+
+  <script>
+    document.getElementById('add-button').addEventListener('click', function () {
+      document.getElementById('add-candidate-form').style.display = 'block';
+    });
+
+    document.getElementById('cancel-button').addEventListener('click', function () {
+      document.getElementById('add-candidate-form').style.display = 'none';
+    });
+  </script>
+</body>
+
+</html>
