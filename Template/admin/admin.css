@@ -60,7 +60,7 @@ body {
     font-weight: bold;
 }
 
-#vote-button {
+.vote-button {
     padding: 5px 15px;
     font-size: 20px;
     background-color: green;
@@ -83,7 +83,7 @@ body {
     cursor: pointer;
 }
 
-#delete-button {
+.delete-button {
     padding: 5px 15px;
     font-size: 10px;
     background-color: red;
@@ -94,9 +94,22 @@ body {
     margin-top: 10px;
     margin-right:200px;
 }
-
-#delete-button:hover {
+.delete-button:hover {
     background-color: darkred;
+}
+.update-button {
+    padding: 5px 15px;
+    font-size: 10px;
+    background-color: blue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right:200px;
+}
+.update-button:hover {
+    background-color: darkblue;
 }
 
 #add-candidate-form {
@@ -144,3 +157,16 @@ body {
 #confirm-add-button:hover {
     background-color: darkgreen;
 }
+
+
+.candidate-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+/*-----------------------------------------------------  */
+
+
+

@@ -1,12 +1,26 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 contract Election {
     bool public electionStarted;
     bool public electionEnded;
     uint public electionEndTime;
+    address public admin; // Địa chỉ admin
+    mapping (address => bool) public isValidVoter;
 
     // Địa chỉ hợp lệ được phép bình
     mapping(address => bool) public validVoters;
+
+    constructor() {
+        admin = msg.sender; // Người triển khai là admin mặc định
+    }
+    modifier onlyadmin(){
+        require(msg.sender == admin,"chi admin moi co quyen" );
+        _;
+    }
+    
+    
 
     // Quản lý cuộc bầu cử
     struct ElectionDetails {
@@ -25,6 +39,7 @@ contract Election {
     }
     Candidate[] public candidates;
     mapping(uint => address) public candidateAddresses;
+    uint public currentCandidateId = 0; // Biến trạng thái theo dõi ID ứng cử viên hiện tại
 
     struct Voter {
         address voterAddress;
@@ -72,22 +87,25 @@ contract Election {
 
     // 3. Đăng ký ứng cử viên
     function addCandidate(string memory _name) public {
-        uint candidateId = candidates.length;
+        uint candidateId = currentCandidateId;
         candidates.push(Candidate({
             candidate_id: candidateId,
             name: _name,
             vote_count: 0
         }));
         candidateAddresses[candidateId] = msg.sender;
+        currentCandidateId++;
         emit CandidateAdded(_name, candidateId);
     }
 
     // 4. Sửa thông tin ứng cử viên
-    function updateCandidate(uint _candidateId, string memory _newName) public {
-        require(_candidateId < candidates.length, "Invalid candidate ID.");
-        require(candidateAddresses[_candidateId] == msg.sender, "Only the candidate can update their info.");
-        candidates[_candidateId].name = _newName;
-        emit CandidateUpdated(_candidateId, _newName);
+    function updateCandidate(uint candidate_id, string memory newName) public {
+        require(candidate_id < candidates.length, "Invalid candidate ID");
+        require(msg.sender == candidateAddresses[candidate_id], "Only the owner can update this candidate");
+
+        // Cập nhật tên ứng viên
+        candidates[candidate_id].name = newName;
+        emit CandidateUpdated(candidate_id, newName); // Thêm event nếu cần
     }
 
     // 5. Xóa ứng cử viên
@@ -105,17 +123,17 @@ contract Election {
 
     // 6. Đăng ký các địa chỉ ví hợp lệ (Cử tri)
     function addValidVoter(address _voter, string memory _name) public {
-    require(!validVoters[_voter], "Voter is already registered.");
-    validVoters[_voter] = true;
-    voterNames[_voter] = _name;
+        require(!validVoters[_voter], "Voter is already registered.");
+        validVoters[_voter] = true;
+        voterNames[_voter] = _name;
 
-    uint voterId = votersList.length; 
-    voterIds[_voter] = voterId;  
+        uint voterId = votersList.length; 
+        voterIds[_voter] = voterId;  
 
-    // Thêm cử tri vào mảng votersList
-    votersList.push(Voter({
-        voterId: voterId,
-        voterAddress: _voter
+        // Thêm cử tri vào mảng votersList
+        votersList.push(Voter({
+            voterId: voterId,
+            voterAddress: _voter
     }));
     
     emit VoterAdded(_voter, _name);
@@ -214,6 +232,6 @@ contract Election {
 
     // 12. Hiển thị tất cả các cử tri
     function showAllVoters() public view returns (Voter[] memory) {
-    return votersList; // Trả về danh sách cử tri với địa chỉ và ID
+        return votersList; // Trả về danh sách cử tri với địa chỉ và ID
     }
 }

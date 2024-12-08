@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <title>Form Bầu Cử Tổng Thống</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div style="font-size: 35px;" class="admin">User </div>
+  <button id="connect-button">Connect Wallet</button>
+  <div id="wallet-address">Địa chỉ ví: ...</div>
+  <br>
+  <button id = "show-button">Hiển thị ứng cử viên</button>
+  
+
+  <div class="voting-form" id="voting-form">
+    <h3>Bầu Cử Tổng Thống</h3>
+    <div class="candidate-list" id="candidate-list">
+        <!-- Ứng cử viên sẽ được tạo tự động tại đây -->
+    </div>
+  </div>
+
+   <a href="/Template/admin/admin.html">Đến Admin</a>
+  
+  <script src="/FrontEnd/mainUser.js"></script>
+  <script src="/FrontEnd/constant.js"></script>
+  <script src="/FrontEnd/Contract.js"></script>
+  <script src="/FrontEnd/wallet.js"></script>
+
+
+
+</body>
+
+</html>
