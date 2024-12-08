@@ -15,11 +15,10 @@ contract Election {
     constructor() {
         admin = msg.sender; // Người triển khai là admin mặc định
     }
-    modifier onlyadmin(){
+    modifier onlyAdmin(){
         require(msg.sender == admin,"chi admin moi co quyen" );
         _;
     }
-    
     
 
     // Quản lý cuộc bầu cử
@@ -86,7 +85,7 @@ contract Election {
     }
 
     // 3. Đăng ký ứng cử viên
-    function addCandidate(string memory _name) public {
+    function addCandidate(string memory _name) public onlyAdmin {
         uint candidateId = currentCandidateId;
         candidates.push(Candidate({
             candidate_id: candidateId,
@@ -99,7 +98,7 @@ contract Election {
     }
 
     // 4. Sửa thông tin ứng cử viên
-    function updateCandidate(uint candidate_id, string memory newName) public {
+    function updateCandidate(uint candidate_id, string memory newName) public onlyAdmin{
         require(candidate_id < candidates.length, "Invalid candidate ID");
         require(msg.sender == candidateAddresses[candidate_id], "Only the owner can update this candidate");
 
@@ -107,9 +106,8 @@ contract Election {
         candidates[candidate_id].name = newName;
         emit CandidateUpdated(candidate_id, newName); // Thêm event nếu cần
     }
-
     // 5. Xóa ứng cử viên
-    function removeCandidate(uint _candidateId) public {
+    function removeCandidate(uint _candidateId) public onlyAdmin{
         require(_candidateId < candidates.length, "Invalid candidate ID.");
         require(candidateAddresses[_candidateId] == msg.sender, "Only the candidate can remove their profile.");
         
@@ -126,70 +124,53 @@ contract Election {
         require(!validVoters[_voter], "Voter is already registered.");
         validVoters[_voter] = true;
         voterNames[_voter] = _name;
-
         uint voterId = votersList.length; 
         voterIds[_voter] = voterId;  
-
         // Thêm cử tri vào mảng votersList
         votersList.push(Voter({
             voterId: voterId,
             voterAddress: _voter
-    }));
-    
-    emit VoterAdded(_voter, _name);
+        }));
+        emit VoterAdded(_voter, _name);
     }
-    
+    //Update
     function updateVoterAddress(uint _voterId, address _newAddress) public {
-    // Kiểm tra ID hợp lệ
-    require(_voterId < votersList.length, "Invalid voter ID.");
-
-    // Lấy địa chỉ cũ của cử tri
-    address oldAddress = votersList[_voterId].voterAddress;
-
-    // Kiểm tra địa chỉ cử tri cũ hợp lệ
-    require(validVoters[oldAddress], "Old voter address is not valid.");
-
-    // Kiểm tra địa chỉ mới chưa được sử dụng
-    require(!validVoters[_newAddress], "New address is already a valid voter.");
-
-    // Xóa địa chỉ cũ khỏi danh sách hợp lệ
-    validVoters[oldAddress] = false;
-
-    // Thêm địa chỉ mới vào danh sách hợp lệ
-    validVoters[_newAddress] = true;
-
-    // Cập nhật trong danh sách cử tri
-    votersList[_voterId].voterAddress = _newAddress;
-
-    // Cập nhật tên liên kết với địa chỉ mới
-    voterNames[_newAddress] = voterNames[oldAddress];
-    voterNames[oldAddress] = ""; // Xóa tên liên kết với địa chỉ cũ
-
-    emit VoterUpdated(oldAddress, _newAddress);
+        // Kiểm tra ID hợp lệ
+        require(_voterId < votersList.length, "Invalid voter ID.");
+        // Lấy địa chỉ cũ của cử tri
+        address oldAddress = votersList[_voterId].voterAddress;
+        // Kiểm tra địa chỉ cử tri cũ hợp lệ
+        require(validVoters[oldAddress], "Old voter address is not valid.");
+        // Kiểm tra địa chỉ mới chưa được sử dụng
+        require(!validVoters[_newAddress], "New address is already a valid voter.");
+        // Xóa địa chỉ cũ khỏi danh sách hợp lệ
+        validVoters[oldAddress] = false;
+        // Thêm địa chỉ mới vào danh sách hợp lệ
+        validVoters[_newAddress] = true;
+        // Cập nhật trong danh sách cử tri
+        votersList[_voterId].voterAddress = _newAddress;
+        // Cập nhật tên liên kết với địa chỉ mới
+        voterNames[_newAddress] = voterNames[oldAddress];
+        voterNames[oldAddress] = ""; // Xóa tên liên kết với địa chỉ cũ
+        emit VoterUpdated(oldAddress, _newAddress);
     }
-
     // 7. Xóa cử tri
     function removeVoterById(uint _voterId) public {
-    require(_voterId < votersList.length, "Invalid voter ID.");
-
-    // Tìm cử tri từ ID
-    address voterAddress = votersList[_voterId].voterAddress;
-    
-    // Kiểm tra nếu cử tri đã bỏ phiếu và hủy phiếu của họ
-    require(validVoters[voterAddress], "Voter is not valid.");
-    validVoters[voterAddress] = false;
-    hasVoted[voterAddress] = false;
-
-    // Xóa cử tri khỏi mảng votersList
-    for (uint i = _voterId; i < votersList.length - 1; i++) {
-        votersList[i] = votersList[i + 1];
-    }
-    votersList.pop();  // Xóa phần tử cuối cùng trong mảng
-
-    // Xóa ID cử tri từ mapping voterIds
-    delete voterIds[voterAddress];
-
-    emit VoterRemoved(voterAddress);
+        require(_voterId < votersList.length, "Invalid voter ID.");
+        // Tìm cử tri từ ID
+        address voterAddress = votersList[_voterId].voterAddress;
+        // Kiểm tra nếu cử tri đã bỏ phiếu và hủy phiếu của họ
+        require(validVoters[voterAddress], "Voter is not valid.");
+        validVoters[voterAddress] = false;
+        hasVoted[voterAddress] = false;
+        // Xóa cử tri khỏi mảng votersList
+        for (uint i = _voterId; i < votersList.length - 1; i++) {
+            votersList[i] = votersList[i + 1];
+        }
+        votersList.pop();  // Xóa phần tử cuối cùng trong mảng
+        // Xóa ID cử tri từ mapping voterIds
+        delete voterIds[voterAddress];
+        emit VoterRemoved(voterAddress);
 }
 
     // 8. Bỏ phiếu
@@ -231,7 +212,16 @@ contract Election {
     }
 
     // 12. Hiển thị tất cả các cử tri
-    function showAllVoters() public view returns (Voter[] memory) {
-        return votersList; // Trả về danh sách cử tri với địa chỉ và ID
+    function showAllVoters() public view returns (address[] memory, string[] memory) {
+        uint voterCount = votersList.length;
+        address[] memory addresses = new address[](voterCount);
+        string[] memory names = new string[](voterCount);
+
+        for (uint i = 0; i < voterCount; i++) {
+            addresses[i] = votersList[i].voterAddress;
+            names[i] = voterNames[votersList[i].voterAddress];
+        }
+
+        return (addresses, names);
     }
 }

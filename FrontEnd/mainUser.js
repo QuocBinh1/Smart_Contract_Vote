@@ -4,28 +4,31 @@ const showcandidates = document.getElementById("show-button");
 const addCandidateButton = document.getElementById("confirm-add-button");
 let web3, contract;
 connectButton.addEventListener("click", async () => {
-  if (window.ethereum) {
-      web3 = new Web3(window.ethereum);
-      try {
-          // Yêu cầu quyền truy cập vào tài khoản
-          const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-
-          // Sử dụng tài khoản đầu tiên mặc định
-          if (accounts.length > 0) {
-              const selectedAccount = accounts[0];
-              console.log("Kết nối thành công với tài khoản:", selectedAccount);
-              walletAddress.textContent = selectedAccount; // Hiển thị tài khoản đã kết nối
-              contract = await contract_instance(web3, abi, contractAddress);
-          } else {
-              console.log("Không tìm thấy tài khoản nào!");
-          }
-      } catch (error) {
-          console.log("Người dùng từ chối quyền truy cập tài khoản:", error);
-      }
-  } else {
-      console.log("Không phát hiện trình duyệt Ethereum. Vui lòng cài đặt MetaMask!");
-  }
-});
+    if (window.ethereum) {
+        web3 = new Web3(window.ethereum);
+        try {
+            const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+            if (accounts.length > 0) {
+                const selectedAccount = accounts[0];
+                walletAddress.textContent = selectedAccount;
+                contract = await contract_instance(web3, CONTRACT_ABI, CONTRACT_ADDRESS);
+                const isValidVoter = await contract.methods.validVoters(selectedAccount).call();
+                if (isValidVoter) {
+                    // Hiển thị nút Vote
+                    document.getElementById('show-button').style.display = 'block';
+                } else {
+                    alert("Bạn không có quyền bỏ phiếu");
+                }
+            } else {
+                console.log("Không tìm thấy tài khoản nào!");
+            }
+        } catch (error) {
+            console.log("Người dùng từ chối quyền truy cập tài khoản:", error);
+        }
+    } else {
+        console.log("Không phát hiện trình duyệt Ethereum. Vui lòng cài đặt MetaMask!");
+    }
+  });
 // hiển thị ứng cử viên
 // hiển thị ứng cử viên
 showcandidates.addEventListener("click", async () => {

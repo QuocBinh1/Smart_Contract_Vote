@@ -7,6 +7,9 @@ body {
     background-color: #F5F5DC;
 }
 
+
+
+/* ứng cử viên */
 #connect-button, #add-button {
     padding: 10px 20px;
     font-size: 16px;
@@ -59,7 +62,6 @@ body {
     font-size: 18px;
     font-weight: bold;
 }
-
 .vote-button {
     padding: 5px 15px;
     font-size: 20px;
@@ -91,7 +93,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     margin-right:200px;
 }
 .delete-button:hover {
@@ -123,7 +125,7 @@ body {
 }
 
 #add-candidate-form input {
-    width: 100%;
+    width: 90%;
     padding: 8px;
     margin: 10px 0;
     border: 1px solid #ccc;
@@ -137,13 +139,11 @@ body {
     cursor: pointer;
     border-radius: 5px;
 }
-
 #cancel-button {
     background-color: red;
     color: white;
     border: none;
 }
-
 #cancel-button:hover {
     background-color: darkred;
 }
@@ -166,7 +166,107 @@ body {
     padding: 5px;
     border: 1px solid #ddd;
 }
+
+
+
 /*-----------------------------------------------------  */
 
+/* cư tri */
+#connect-button , #add-voter-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#add-voter-form {
+    display: none;
+    margin-top: 20px;
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+#add-voter-form input {
+    width: 90%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#add-voter-form button {
+    padding: 8px 20px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#cancel-voter-button {
+    background-color: red;
+    color: white;
+    border: none;
+}
+
+#cancel-voter-button:hover {
+    background-color: darkred;
+}
+
+#confirm-add-voter-button {
+    background-color: green;
+    color: white;
+    border: none;
+}
+
+#confirm-add-voter-button:hover {
+    background-color: darkgreen;
+}
 
 
+#add-form-voter {
+    display: none;
+    margin-top: 20px;
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+#add-form-voter input {
+    width: 90%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#add-form-voter button {
+    padding: 8px 20px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#show-button-voter  {
+    padding: 5px 15px;
+    font-size: 20px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.voter-form {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    background-color: white;
+}

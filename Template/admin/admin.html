@@ -11,31 +11,59 @@
 
 <body>
   <div style="font-size: 30px;" class="admin">Admin</div>
+  <a href="/Template/user/index.html">Đến User</a>
 
   <button id="connect-button">Connect Wallet</button>
   <div id="wallet-address">Địa chỉ ví: ...</div>
-  <button id="add-button">Thêm ứng cử viên</button>
+
+
+
+
+  <div style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 10px;" class="add">
+    <button id="add-button"style="display: none;" >Thêm ứng cử viên</button>
+    <button id="add-voter-button" style="display: none; margin-left: 10px;">Thêm cử tri</button>
+  </div>
   <br>
-  <button id = "show-button">Hiển thị ứng cử viên</button>
+  <!-- thêm ứng cử viên -->
+    <button id = "show-button"        style="display: none;">Hiển thị ứng cử viên</button>
+    <button id = "show-button-voter"  style="display: none;">Hiển thị cử tri     </button>
+    
   <div id="add-candidate-form">
     <h3>Thêm Ứng Cử Viên</h3>
     <input type="text" id="candidate-name" placeholder="Tên ứng cử viên">
-    <!-- <input type="text" id="candidate-id" placeholder="ID ứng cử viên"> -->
     <button id="cancel-button">Cancel</button>
     <button id="confirm-add-button">Add</button>
   </div>
 
-  
-    <div class="voting-form" id="voting-form">
-      <h3>Bầu Cử Tổng Thống</h3>
-      <div class="candidate-list" id="candidate-list">
-          <!-- Ứng cử viên sẽ được tạo tự động tại đây -->
-      </div>
-   </div>
+   <!-- thêm cử tri -->
+  <div style="display: none;" id="add-form-voter">
+      <h3>Thêm Cử Tri</h3>
+      <input type="text" id="voter-name" placeholder="Tên cử tri">
+      <input type="text" id="voter-address" placeholder="ID cử tri">
+      <button id="cancel-voter-button">Cancel</button>
+      <button id="confirm-add-voter-button">Add</button>
+  </div>
 
-   
-  
-  <a href="/Template/user/index.html">Đến User</a>
+
+
+  <div class="voting-form" id="voting-form">
+    <h3>Bầu Cử Tổng Thống</h3>
+    <div class="candidate-list" id="candidate-list"></div>
+        <!-- Ứng cử viên sẽ được tạo tự động tại đây -->
+  </div>
+
+  <div class="voter-form" id="voter-form">
+    <h3>Danh Sách Cử Tri</h3>
+    <div class="voter-list" id="voter-list"></div>
+        <!-- cử tri sẽ được tạo tự động tại đây -->
+  </div>
+
+
+
+
+
+
+
 
   <script src="/FrontEnd/mainAdmin.js"></script>
   <script src="/FrontEnd/constant.js"></script>
