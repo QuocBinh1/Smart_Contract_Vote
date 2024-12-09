@@ -8,6 +8,9 @@ contract Election {
     uint public electionEndTime;
     address public admin; // Địa chỉ admin
     mapping (address => bool) public isValidVoter;
+    
+    // Theo dõi số lần cử tri đã bỏ phiếu và ứng cử viên mà họ đã bầu
+    mapping(address => mapping(uint => bool)) public voterVotes; // Lưu: voter -> candidate -> đã vote hay chưa
 
     // Địa chỉ hợp lệ được phép bình
     mapping(address => bool) public validVoters;
@@ -46,6 +49,7 @@ contract Election {
     }
     Voter[] public votersList; 
     mapping(address => uint) public voterIds;  
+    mapping(address => uint) public voteCount;
 
     // Quản lý cử tri
     mapping(address => bool) public hasVoted;
@@ -175,15 +179,26 @@ contract Election {
 
     // 8. Bỏ phiếu
     function vote(uint _candidateId) public {
-        // Kiểm tra xem cử tri đã bỏ phiếu chưa
+        // Kiểm tra xem cử tri có hợp lệ không
         require(validVoters[msg.sender], "You are not an authorized voter.");
-        require(!hasVoted[msg.sender], "You have already voted.");
         require(_candidateId < candidates.length, "Invalid candidate.");
+        require(voteCount[msg.sender] < 3, "You have reached the maximum vote limit of 3.");
+        require(!voterVotes[msg.sender][_candidateId], "You have already voted for this candidate.");
 
+        // Tăng số phiếu của ứng viên
         candidates[_candidateId].vote_count++;
-        hasVoted[msg.sender] = true;
+
+        // Đánh dấu cử tri đã bỏ phiếu cho ứng cử viên này
+        voterVotes[msg.sender][_candidateId] = true;
+
+        // Tăng số lần bỏ phiếu của cử tri
+        voteCount[msg.sender]++;
+
+        // Phát sự kiện khi bỏ phiếu thành công
         emit Voted(msg.sender, _candidateId);
     }
+
+
 
     // 9. Kết thúc cuộc bầu cử và công bố kết quả
     function endElection() public {
@@ -206,12 +221,12 @@ contract Election {
         return electionEndTime - block.timestamp;
     }
 
+
     // 11. Lấy thông tin ứng cử viên
     function getCandidates() public view returns (Candidate[] memory) {
         return candidates;
     }
-
-    // 12. Hiển thị tất cả các cử tri
+    // 12 Hiển thị danh sách tất cả các cử tri
     function showAllVoters() public view returns (address[] memory, string[] memory) {
         uint voterCount = votersList.length;
         address[] memory addresses = new address[](voterCount);

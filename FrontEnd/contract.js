@@ -28,6 +28,11 @@ async function updateCandidate(instance, id, name, form) {
 async function removeCandidate(instance, id, form) {
     return await instance.methods.removeCandidate(id).send({ "from": form });
 }
+async function vote(instance, candidateId, form) {
+    return await instance.methods.vote(candidateId).send({ "from": form });
+}
+
+//-----------------------------cử tri-------------------------------------------------------------------------------
 
 
 //hiển thị danh sách cử tri đủ điều kiện
@@ -39,9 +44,9 @@ async function addValidVoter(instance, address, name, form) {
     return await instance.methods.addValidVoter(address, name).send({ "from": form });
 }
 //cập nhật địa chỉ cử tri
-// async function updateVoterAddress(instance, id, newAddress, form) {
-//     return await instance.methods.updateVoterAddress(id, newAddress).send({ "from": form });
-// }
+async function updateVoterAddress(instance, id, newAddress, form) {
+    return await instance.methods.updateVoterAddress(id, newAddress).send({ "from": form });
+}
 //xóa cử tri
 async function removeVoterById(instance, id, form) {
     return await instance.methods.removeVoterById(id).send({ "from": form });

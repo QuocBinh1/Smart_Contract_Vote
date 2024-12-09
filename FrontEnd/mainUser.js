@@ -30,7 +30,6 @@ connectButton.addEventListener("click", async () => {
     }
   });
 // hiển thị ứng cử viên
-// hiển thị ứng cử viên
 showcandidates.addEventListener("click", async () => {
   if (window.web3) {
       web3 = new Web3(web3.currentProvider);
@@ -80,28 +79,36 @@ showcandidates.addEventListener("click", async () => {
 });
 
 
-// const handvote = async()=>
-// {
-//   if(window.web3) {
-//     web3 = new Web3(web3.currentProvider);
-//     contract = await contract_instance(web3, CONTRACT_ABI, CONTRACT_ADDRESS);
-//     const accounts = await web3.eth.getAccounts();
-//     const candidate_id = document.getElementById("candidate-id").value;
-//     try {
-//       const gasPrice = await web3.eth.getGasPrice(); 
-//       await contract.methods.vote(candidate_id).send({ from: accounts[0], gas: 9000000 , gasPrice: gasPrice});
-//       showCandidate();
-//       alert("Vote thành công!");  
-//     } catch (error) {
-//       alert("Có lỗi xảy ra khi vote!");
-//       console.log(error);
-//     }
-//   }
-// }
 
+//vote
+const handvote = async (candidate_id) => {
+    try{
+        if(!contract){
+            alert("Vui lòng kết nối với MetaMask");
+            return;
+        }
+        //laays tk hien tai
+        const accounts =  await web3.eth.getAccounts();
+        const selectedAccount = accounts[0];
+
+         // Kiểm tra số lần bỏ phiếu của tài khoản này
+        const voteCount = await contract.methods.voteCount(selectedAccount).call();
+        if (voteCount >= 3) {
+            alert("Bạn đã bỏ phiếu đủ số lần cho phép.");
+            return;
+         }
+        const gasPrice = await web3.eth.getGasPrice();
+        //goi ham vote tren hop dong
+        await contract.methods.vote(candidate_id).send({from: selectedAccount , gasPrice: gasPrice});
+        alert(`Bạn đã bỏ phiếu cho ứng cử viên ${name} thành công!`);
+        showCandidate();
+    }catch(error){
+        console.error("Lỗi khi bỏ phiếu:", error);
+        alert("Đã xảy ra lỗi khi bỏ phiếu. Vui lòng thử lại.");
+    };
+}
 
 // Cập nhật lại danh sách sách
-
 const showCandidate = async () => {
   showcandidates.click();
 };
