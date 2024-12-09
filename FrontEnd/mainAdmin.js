@@ -247,7 +247,7 @@ const handleDelete_voter = async (index) => {
       const accounts = await web3.eth.getAccounts();
 
       const gasPrice = await web3.eth.getGasPrice();
-      await contract.methods.removeVoterById(index).send({from: accounts[0],gas: 9000000,gasPrice: gasPrice,
+      await contract.methods.removeVoterById(index).send({from: accounts[0],gas: 3000000,gasPrice: gasPrice,
       });
 
       alert("Xóa cử tri thành công!");

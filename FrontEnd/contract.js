@@ -3,6 +3,18 @@ async function contract_instance(web3 , abi , address) {
 	return new web3.eth.Contract(abi, address);;
 }
 
+//-------------------tạo cuộc bầu cử--------------------------------------------------------------------------------
+async function createElection(instance, name, time, fromAddress) {
+    try {
+        // Gọi phương thức Solidity `createElection` với tên và thời gian
+        const transaction = await instance.methods.createElection(name, time).send({ from: fromAddress });
+        console.log('Cuộc bầu cử được tạo thành công', transaction);
+    } catch (error) {
+        console.error('Lỗi khi tạo cuộc bầu cử:', error);
+    }
+}
+
+//------------------------------------------------------------------------------------------------------------
 
 //hiển thị danh sách ứng cử viên
 async function GetCandidate(instance) {
@@ -52,7 +64,4 @@ async function removeVoterById(instance, id, form) {
     return await instance.methods.removeVoterById(id).send({ "from": form });
 }
 
-
-// function addValidVoter(address _voter, string memory _name) public {
-// function updateVoterAddress(uint _voterId, address _newAddress) public {
-// function removeVoterById(uint _voterId) public {
+//------------------------------------------------------------------------------------------------------------

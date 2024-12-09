@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
-
 contract Election {
     bool public electionStarted;
     bool public electionEnded;
     uint public electionEndTime;
     address public admin; // Địa chỉ admin
     mapping (address => bool) public isValidVoter;
-    
+    uint public currentCandidateId = 0; // Biến trạng thái theo dõi ID ứng cử viên hiện tại
+
     // Theo dõi số lần cử tri đã bỏ phiếu và ứng cử viên mà họ đã bầu
     mapping(address => mapping(uint => bool)) public voterVotes; // Lưu: voter -> candidate -> đã vote hay chưa
-
     // Địa chỉ hợp lệ được phép bình
     mapping(address => bool) public validVoters;
 
+    
     constructor() {
         admin = msg.sender; // Người triển khai là admin mặc định
     }
@@ -22,8 +21,6 @@ contract Election {
         require(msg.sender == admin,"chi admin moi co quyen" );
         _;
     }
-    
-
     // Quản lý cuộc bầu cử
     struct ElectionDetails {
         string title;
@@ -32,7 +29,6 @@ contract Election {
         string status;
     }
     ElectionDetails public election;
-
     // Quản lý ứng cử viên
     struct Candidate {
         uint candidate_id;
@@ -41,8 +37,6 @@ contract Election {
     }
     Candidate[] public candidates;
     mapping(uint => address) public candidateAddresses;
-    uint public currentCandidateId = 0; // Biến trạng thái theo dõi ID ứng cử viên hiện tại
-
     struct Voter {
         address voterAddress;
         uint voterId;
@@ -184,27 +178,19 @@ contract Election {
         require(_candidateId < candidates.length, "Invalid candidate.");
         require(voteCount[msg.sender] < 3, "You have reached the maximum vote limit of 3.");
         require(!voterVotes[msg.sender][_candidateId], "You have already voted for this candidate.");
-
         // Tăng số phiếu của ứng viên
         candidates[_candidateId].vote_count++;
-
         // Đánh dấu cử tri đã bỏ phiếu cho ứng cử viên này
         voterVotes[msg.sender][_candidateId] = true;
-
         // Tăng số lần bỏ phiếu của cử tri
         voteCount[msg.sender]++;
-
         // Phát sự kiện khi bỏ phiếu thành công
         emit Voted(msg.sender, _candidateId);
     }
-
-
-
     // 9. Kết thúc cuộc bầu cử và công bố kết quả
     function endElection() public {
         require(!electionEnded, "Election has already ended.");
         electionEnded = true;
-        
         uint[] memory results = new uint[](candidates.length);
         for (uint i = 0; i < candidates.length; i++) {
             results[i] = candidates[i].vote_count;
@@ -212,7 +198,6 @@ contract Election {
         emit ElectionEnded();
         emit ElectionResults(results);
     }
-
     // 10. Quản lý thời gian bầu cử
     function getTimeRemaining() public view returns (uint) {
         if (block.timestamp >= electionEndTime) {

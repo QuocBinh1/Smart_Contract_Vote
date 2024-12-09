@@ -31,10 +31,10 @@ connectButton.addEventListener("click", async () => {
   });
 // hiển thị ứng cử viên
 showcandidates.addEventListener("click", async () => {
-  if (window.web3) {
-      web3 = new Web3(web3.currentProvider);
-      contract = await contract_instance(web3, CONTRACT_ABI, CONTRACT_ADDRESS);
-
+    if (!contract) {
+        alert("Vui lòng kết nối với MetaMask");
+        return;
+    }
       const candidateListElement = document.getElementById("candidate-list");
       candidateListElement.innerHTML = ''; // Xóa tất cả các ứng cử viên hiện có
 
@@ -62,7 +62,7 @@ showcandidates.addEventListener("click", async () => {
           voteButton.textContent = "Vote";
           voteButton.id = `vote-${candidate_id}`;
           voteButton.classList.add("vote-button");
-          voteButton.addEventListener("click", () => handvote(candidate_id));
+          voteButton.addEventListener("click", () => handvote(candidate_id , name));
 
 
 
@@ -75,13 +75,15 @@ showcandidates.addEventListener("click", async () => {
           
 
       });
-  }
+  
 });
 
 
 
 //vote
-const handvote = async (candidate_id) => {
+// Lưu danh sách ứng cử viên mà người dùng đã bỏ phiếu
+let votedCandidatesByAccount = {};
+const handvote = async (candidate_id , candidateName) => {
     try{
         if(!contract){
             alert("Vui lòng kết nối với MetaMask");
@@ -90,6 +92,12 @@ const handvote = async (candidate_id) => {
         //laays tk hien tai
         const accounts =  await web3.eth.getAccounts();
         const selectedAccount = accounts[0];
+
+        // Kiểm tra xem người dùng đã vote cho ứng cử viên này chưa
+        if (votedCandidatesByAccount[selectedAccount]?.includes(candidate_id)) {
+            alert("Bạn đã vote cho ứng cử viên này rồi!");
+            return;
+        }
 
          // Kiểm tra số lần bỏ phiếu của tài khoản này
         const voteCount = await contract.methods.voteCount(selectedAccount).call();
@@ -100,7 +108,12 @@ const handvote = async (candidate_id) => {
         const gasPrice = await web3.eth.getGasPrice();
         //goi ham vote tren hop dong
         await contract.methods.vote(candidate_id).send({from: selectedAccount , gasPrice: gasPrice});
-        alert(`Bạn đã bỏ phiếu cho ứng cử viên ${name} thành công!`);
+
+        // Cập nhật danh sách ứng cử viên đã vote
+        if (!votedCandidatesByAccount[selectedAccount])  votedCandidatesByAccount[selectedAccount] = [];
+        votedCandidatesByAccount[selectedAccount].push(candidate_id);
+
+        alert(`Bỏ phiếu thành công cho ứng cử viên ${candidateName}`);
         showCandidate();
     }catch(error){
         console.error("Lỗi khi bỏ phiếu:", error);
@@ -108,7 +121,8 @@ const handvote = async (candidate_id) => {
     };
 }
 
+
 // Cập nhật lại danh sách sách
 const showCandidate = async () => {
-  showcandidates.click();
+    await showcandidates.dispatchEvent(new Event('click'));
 };

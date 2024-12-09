@@ -1,5 +1,5 @@
 //constant.js
-CONTRACT_ADDRESS = "0x3276494c4E0E0b1bc768af23e0b1602096640242";
+CONTRACT_ADDRESS = "0x35F30057d1b72F849670A0499C3620e084b6B653";
 CONTRACT_ABI =[
 	{
 		"inputs": [],
@@ -626,6 +626,30 @@ CONTRACT_ABI =[
 				"internalType": "string",
 				"name": "",
 				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "voterVotes",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
