@@ -173,6 +173,11 @@ showvoters.addEventListener("click", async () => {
         const listItem = document.createElement("div");
         listItem.className = "voter-item";
         
+        // Hiển thị ID
+        const idParagraph = document.createElement("p");
+        idParagraph.textContent = `ID: ${index + 1}`; // ID tự động tăng bắt đầu từ 1
+
+          
         const nameParagraph = document.createElement("p");
         nameParagraph.textContent = `Tên: ${voters[1][index]}`;
         
@@ -181,20 +186,23 @@ showvoters.addEventListener("click", async () => {
         
         // Tạo nút Delete
         const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
+        deleteButton.id = `delete-${index}`;
+        deleteButton.textContent = "Xóa";
         deleteButton.classList.add("delete-button");
-        deleteButton.addEventListener("click", () => handleDelete_voter(address));
+        deleteButton.addEventListener("click", () => handleDelete_voter(index));
 
         // Tạo nút Update
         const updateButton = document.createElement("button");
-        updateButton.textContent = "Update";
+        updateButton.id = `update-${index}`;
+        updateButton.textContent = "Cập Nhập";
         updateButton.classList.add("update-button");
         updateButton.addEventListener("click", () => handUpdate_voter(address, voters[1][index]));
 
+        listItem.appendChild(idParagraph);
         listItem.appendChild(nameParagraph);
         listItem.appendChild(addressParagraph);
         listItem.appendChild(deleteButton);
-        listItem.appendChild(updateButton);
+        //listItem.appendChild(updateButton);
         
         voterListElement.appendChild(listItem);
       });
@@ -218,6 +226,7 @@ addVoterButton.addEventListener("click", async () => {
       const accounts = await web3.eth.getAccounts();
       const voterAddress = document.getElementById("voter-address").value;
       const voterName = document.getElementById("voter-name").value;
+
       const gasPrice = await web3.eth.getGasPrice();
       await contract.methods.addValidVoter(voterAddress, voterName).send({from: accounts[0], gas: 9000000, gasPrice: gasPrice});
       alert("Thêm cử tri thành công!");
@@ -230,7 +239,7 @@ addVoterButton.addEventListener("click", async () => {
 });
 
 //xóa cử tri
-const handleDelete_voter = async (address) => {
+const handleDelete_voter = async (index) => {
   if (window.ethereum) {
     try {
       web3 = new Web3(window.ethereum);
@@ -238,7 +247,7 @@ const handleDelete_voter = async (address) => {
       const accounts = await web3.eth.getAccounts();
 
       const gasPrice = await web3.eth.getGasPrice();
-      await contract.methods.removeVoterById(address).send({from: accounts[0],gas: 9000000,gasPrice: gasPrice,
+      await contract.methods.removeVoterById(index).send({from: accounts[0],gas: 9000000,gasPrice: gasPrice,
       });
 
       alert("Xóa cử tri thành công!");
@@ -252,28 +261,28 @@ const handleDelete_voter = async (address) => {
 
 //cập nhật cử tri
 
-const handUpdate_voter = async (address, name) => {
-  const newName = prompt("Nhập tên mới", name); // Lấy tên mới từ người dùng
-
-  if (newName) {
-    if (window.ethereum) {
-      try {
-        web3 = new Web3(web3.currentProvider);    
-        contract = await contract_instance(web3, CONTRACT_ABI, CONTRACT_ADDRESS);
-        const accounts = await web3.eth.getAccounts();
-        const gasPrice = await web3.eth.getGasPrice(); 
+// const handUpdate_voter = async (address, name) => {
+//   const newName = prompt("Nhập tên mới", name); // Lấy tên mới từ người dùng
+//   const newAddress = prompt("Nhập địa chỉ mới", address); // Lấy địa chỉ mới
+//   if (newName) {
+//     if (window.ethereum) {
+//       try {
+//         web3 = new Web3(web3.currentProvider);    
+//         contract = await contract_instance(web3, CONTRACT_ABI, CONTRACT_ADDRESS);
+//         const accounts = await web3.eth.getAccounts();
+//         const gasPrice = await web3.eth.getGasPrice(); 
        
-        await contract.methods.updateVoterAddress(address, newName).send({ from: accounts[0], gas: 9000000, gasPrice: gasPrice });
-        showVoter(); // Cập nhật danh sách cử tri
-        alert("Cử tri đã được cập nhật thành công!");
+//         await contract.methods.updateVoterAddress(newAddress, newName).send({ from: accounts[0], gas: 9000000, gasPrice: gasPrice });
+//         showVoter(); // Cập nhật danh sách cử tri
+//         alert("Cử tri đã được cập nhật thành công!");
 
-      } catch (error) {
-        alert("Có lỗi xảy ra khi cập nhật cử tri!");
-        console.error(error);
-      }
-    } 
-  }
-}
+//       } catch (error) {
+//         alert("Có lỗi xảy ra khi cập nhật cử tri!");
+//         console.error(error);
+//       }
+//     } 
+//   }
+// }
 
 
 //Hiển thị ứng cử viên
