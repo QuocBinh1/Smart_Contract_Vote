@@ -13,27 +13,31 @@
   <div style="font-size: 30px;" class="admin">Admin</div>
   <a  href="/Template/user/index.html" style="">Đến User</a>
   <button id="connect-button">Đăng Nhập Tài Khoản</button>
-  <div id="wallet-address">Địa chỉ ví: ...</div>
+  <div id="address" style=" display: flex; align-items:center; gap: 10px; margin-left: 30%;"> 
+    <h4 >Địa chỉ ví: </h4>
+    <div id="wallet-address" style=" font-size: 16px; font-weight: bold;color: #333;"></div>
+  </div>
+  
 
   <div id="election-time-list" style="font-size: 20px; margin-top: 20px; color: blue;">
     Đang tải thông tin bầu cử...
   </div>
-  <button id="end-election-button" style="display: none;">Kết thúc bầu cử</button>
+  <button id="end-election-button" style="display: none; ">Kết thúc bầu cử</button>
 
-  <div style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 10px;" class="add">
-    <button id="create-election-button" style="display: none ;" ; > tạo cuộc bầu cử</button>
+  <div style="display: flex ; justify-content: flex-start; gap: 10px;" class="add">
+    <button id="create-election-button" style="display: none ;" ; > Tạo cuộc bầu cử</button>
     <button id="add-button"style="display: none;" >Thêm ứng cử viên</button>
-    <button id="add-voter-button" style="display: none; margin-left: 10px;">Thêm cử tri</button>
+    <button id="add-voter-button" style="display: none;">Thêm cử tri</button>
   </div>
   <br>
 
-  <div style="display: flex;justify-content: space-between;align-items: center;margin-bottom: 10px;" class="showlist">
+  <div style=" display: flex; align-items:center; gap: 10px;margin-bottom: 10px; margin-left: 25%;" class="showlist">
     <!-- thêm ứng cử viên -->
     <button id = "show-button"        style="display: none;">Hiển thị ứng cử viên</button>
-    <button id = "show-button-voter"  style="display: none; margin-left: 10px;">Hiển thị cử tri     </button>
+    <button id = "show-button-voter"  style="display: none; margin-left: 150px; ">Hiển thị cử tri     </button>
   </div>
 
-  <div id="add-candidate-form">
+  <div id="add-candidate-form" style="margin-left: 35%; display: none;">
     <h3>Thêm Ứng Cử Viên</h3>
     <input type="text" id="candidate-name" placeholder="Tên ứng cử viên">
     <button id="cancel-button">Cancel</button>
@@ -41,16 +45,17 @@
   </div>
 
    <!-- thêm cử tri -->
-  <div style="display: none;" id="add-form-voter">
+  <div style="display: none; margin-left: 35%" id="add-form-voter">
       <h3>Thêm Cử Tri</h3>
       <input type="text" id="voter-name" placeholder="Tên cử tri">
       <input type="text" id="voter-address" placeholder="ID cử tri">
       <button id="cancel-voter-button">Cancel</button>
       <button id="confirm-add-voter-button">Add</button>
   </div>
+  
 
 <!-- ---------bầu cử form--------------------------------------------------------------------------------------------- -->
-  <div style="display: none;" id="form-election">
+  <div style="display: none;margin-left: 35%;" id="form-election" >
       <h3>Thêm cuộc bầu cử</h3>
       <input type="text" id="election-name" placeholder="Tên cuộc bầu cử">
       <input type="number" id="election-time" placeholder="Thời gian">
@@ -58,18 +63,20 @@
       <button id="createElectionButton">Tạo Cuộc Bầu Cử</button>
   </div>
 <!-- ------------------------------------------------------------------------------------------------------ -->
-
-  <div class="voting-form" id="voting-form">
-    <h3>Danh Sách Ứng Cử Viên</h3>
-    <div class="candidate-list" id="candidate-list"></div>
-        <!-- Ứng cử viên sẽ được tạo tự động tại đây -->
+  <div class="show-candidate-election"  style=" display: flex; align-items:center; gap: 10px; margin-top: 10px; margin-left: 20%;">
+    <div class="voting-form" id="voting-form">
+      <h3>Danh Sách Ứng Cử Viên</h3>
+      <div class="candidate-list" id="candidate-list"></div>
+          <!-- Ứng cử viên sẽ được tạo tự động tại đây -->
+    </div>
+  
+    <div class="voter-form" id="voter-form">
+      <h3>Danh Sách Cử Tri</h3>
+      <div class="voter-list" id="voter-list"></div>
+          <!-- cử tri sẽ được tạo tự động tại đây -->
+    </div>
   </div>
-
-  <div class="voter-form" id="voter-form">
-    <h3>Danh Sách Cử Tri</h3>
-    <div class="voter-list" id="voter-list"></div>
-        <!-- cử tri sẽ được tạo tự động tại đây -->
-  </div>
+  
 
 
 

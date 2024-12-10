@@ -267,7 +267,7 @@ showvoters.addEventListener("click", async () => {
         // Hiển thị ID
         const idParagraph = document.createElement("p");
         idParagraph.textContent = `ID: ${index + 1}`; // ID tự động tăng bắt đầu từ 1
-
+        
           
         const nameParagraph = document.createElement("p");
         nameParagraph.textContent = `Tên: ${voters[1][index]}`;
@@ -275,6 +275,9 @@ showvoters.addEventListener("click", async () => {
         const addressParagraph = document.createElement("p");
         addressParagraph.textContent = `Địa chỉ: ${address}`;
         
+        const _chan = document.createElement("p");
+        _chan.textContent = `---------------------------------------------------------`; 
+
         // Tạo nút Delete
         const deleteButton = document.createElement("button");
         deleteButton.id = `delete-${index}`;
@@ -293,9 +296,10 @@ showvoters.addEventListener("click", async () => {
         listItem.appendChild(nameParagraph);
         listItem.appendChild(addressParagraph);
         listItem.appendChild(deleteButton);
-        //listItem.appendChild(updateButton);
+        listItem.appendChild(updateButton);
         
         voterListElement.appendChild(listItem);
+        listItem.appendChild(_chan);
       });
       
     } catch (error) {
