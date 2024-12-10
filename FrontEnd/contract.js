@@ -45,6 +45,11 @@ function formatTimeRemaining(seconds) {
 setInterval(() => updateElectionInfo(contract), 1000);
 
 
+//end bầu cử
+async function endElection(instance, form) {
+    return await instance.methods.endElection().send({ "from": form });
+}
+
 //------------------------------------------------------------------------------------------------------------
 
 //hiển thị danh sách ứng cử viên

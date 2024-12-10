@@ -1,6 +1,37 @@
 //constant.js
-CONTRACT_ADDRESS = "0x6b01AD3A6B050Bf9e4F208cA0Be6b5f4334844A2";
+CONTRACT_ADDRESS = "0xB9456925CF25AE6c83e7c4e741071eb4B66C275f";
 CONTRACT_ABI =[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "addCandidate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_voter",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"name": "addValidVoter",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
@@ -58,6 +89,24 @@ CONTRACT_ABI =[
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			}
+		],
+		"name": "createElection",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -94,6 +143,19 @@ CONTRACT_ABI =[
 		"inputs": [
 			{
 				"indexed": false,
+				"internalType": "string",
+				"name": "message",
+				"type": "string"
+			}
+		],
+		"name": "ElectionReset",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
 				"internalType": "uint256[]",
 				"name": "voteCounts",
 				"type": "uint256[]"
@@ -101,6 +163,101 @@ CONTRACT_ABI =[
 		],
 		"name": "ElectionResults",
 		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "endElection",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_candidateId",
+				"type": "uint256"
+			}
+		],
+		"name": "removeCandidate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_voterId",
+				"type": "uint256"
+			}
+		],
+		"name": "removeVoterById",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "candidate_id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "newName",
+				"type": "string"
+			}
+		],
+		"name": "updateCandidate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_newTitle",
+				"type": "string"
+			}
+		],
+		"name": "updateElectionTitle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_voterId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_newAddress",
+				"type": "address"
+			}
+		],
+		"name": "updateVoterAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_candidateId",
+				"type": "uint256"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -173,37 +330,6 @@ CONTRACT_ABI =[
 		"type": "event"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			}
-		],
-		"name": "addCandidate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_voter",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			}
-		],
-		"name": "addValidVoter",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "admin",
 		"outputs": [
@@ -265,24 +391,6 @@ CONTRACT_ABI =[
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "duration",
-				"type": "uint256"
-			}
-		],
-		"name": "createElection",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "currentCandidateId",
 		"outputs": [
@@ -325,12 +433,12 @@ CONTRACT_ABI =[
 	},
 	{
 		"inputs": [],
-		"name": "electionEndTime",
+		"name": "electionEnded",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "bool",
 				"name": "",
-				"type": "uint256"
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -338,12 +446,12 @@ CONTRACT_ABI =[
 	},
 	{
 		"inputs": [],
-		"name": "electionEnded",
+		"name": "electionEndTime",
 		"outputs": [
 			{
-				"internalType": "bool",
+				"internalType": "uint256",
 				"name": "",
-				"type": "bool"
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -360,26 +468,6 @@ CONTRACT_ABI =[
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "endElection",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "winner",
-				"type": "string"
-			}
-		],
-		"name": "endElection",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -495,32 +583,6 @@ CONTRACT_ABI =[
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_candidateId",
-				"type": "uint256"
-			}
-		],
-		"name": "removeCandidate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_voterId",
-				"type": "uint256"
-			}
-		],
-		"name": "removeVoterById",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "showAllVoters",
 		"outputs": [
@@ -541,55 +603,6 @@ CONTRACT_ABI =[
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "candidate_id",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "newName",
-				"type": "string"
-			}
-		],
-		"name": "updateCandidate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_newTitle",
-				"type": "string"
-			}
-		],
-		"name": "updateElectionTitle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_voterId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_newAddress",
-				"type": "address"
-			}
-		],
-		"name": "updateVoterAddress",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
@@ -604,19 +617,6 @@ CONTRACT_ABI =[
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_candidateId",
-				"type": "uint256"
-			}
-		],
-		"name": "vote",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -679,30 +679,6 @@ CONTRACT_ABI =[
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "voterVotes",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
@@ -738,6 +714,30 @@ CONTRACT_ABI =[
 				"internalType": "uint256",
 				"name": "voterId",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "voterVotes",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",

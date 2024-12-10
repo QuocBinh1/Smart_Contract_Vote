@@ -63,20 +63,23 @@ contract Election {
     event VoterRemoved(address voter);
     event VoterUpdated(address oldAddress, address newAddress);
 
+    event ElectionReset(string message);
 
 
     // 1. Tạo cuộc bầu cử
     function createElection(string memory name, uint256 duration) public onlyAdmin {
+        if(electionStarted){
+            delete candidates; // Xóa tất cả các ứng cử viên
+            winnerName = ""; // Đặt lại tên người thắng
+            electionEnded = false; // Đặt lại trạng thái kết thúc bầu cử
+            emit ElectionReset("Previous election data has been reset.");
+        }
         electionEndTime = block.timestamp + duration; // duration is in seconds
         election.title = name; // Gán tên cho cuộc bầu cử
         electionStarted = true; // Đánh dấu cuộc bầu cử bắt đầu
         emit ElectionCreated(name, electionEndTime);
     }
-    function endElection(string memory winner) public onlyAdmin {
-        require(block.timestamp >= electionEndTime, "Election is still ongoing");
-        winnerName = winner;
-        emit ElectionEnded(winner);
-    }
+
 
     function getElectionEndTime() public view returns (uint256) {
         return electionEndTime;
@@ -132,15 +135,15 @@ contract Election {
         require(!validVoters[_voter], "Voter is already registered.");
         validVoters[_voter] = true;
         voterNames[_voter] = _name;
-        uint voterId = votersList.length; 
-        voterIds[_voter] = voterId;  
-        // Thêm cử tri vào mảng votersList
+        uint voterId = votersList.length;
+        voterIds[_voter] = voterId;
         votersList.push(Voter({
             voterId: voterId,
             voterAddress: _voter
         }));
         emit VoterAdded(_voter, _name);
     }
+
     //Update
     function updateVoterAddress(uint _voterId, address _newAddress) public {
         // Kiểm tra ID hợp lệ

@@ -8,6 +8,7 @@ const addVoterButton = document.getElementById("confirm-add-voter-button");
 const createElectionButton = document.getElementById("createElectionButton");
 const endElectionButton = document.getElementById("end-election-button");
 
+
 let web3, contract;
 connectButton.addEventListener("click", async () => {
   if (window.ethereum) {
@@ -48,7 +49,7 @@ connectButton.addEventListener("click", async () => {
 }
 });
 
-//kết thúc cuộc bầu cử
+//cập nhập cuộc bầu cử
 async function updateElectionInfo() {
   if (!contract) {
       console.error("Contract chưa được kết nối!");
@@ -72,14 +73,25 @@ async function updateElectionInfo() {
       console.error("Lỗi khi cập nhật thông tin cuộc bầu cử:", error);
   }
 }
-contract.events.ElectionEnded()
-    .on("data", async (event) => {
-        const winnerName = event.returnValues[0]; // Lấy tên người thắng từ sự kiện
-        document.getElementById("election-time-list").textContent = `Cuộc bầu cử đã kết thúc. Người thắng: ${winnerName}`;
-    })
-    .on("error", console.error);
 
-    
+endElectionButton.addEventListener("click", async () => {
+  if (!contract) {
+      alert("Vui lòng kết nối với MetaMask");
+      return;
+  }
+
+  try {
+      const accounts = await web3.eth.getAccounts();
+      const gasPrice = await web3.eth.getGasPrice();
+      await contract.methods.endElection().send({from: accounts[0], gas: 3000000, gasPrice: gasPrice});
+      alert("Cuộc bầu cử đã kết thúc");
+  } catch (error) {
+      console.error("Lỗi khi kết thúc cuộc bầu cử:", error);
+      alert("Đã xảy ra lỗi khi kết thúc cuộc bầu cử. Vui lòng thử lại.");
+  }
+
+});  
+
 function formatTimeRemaining(seconds) {
   if (seconds <= 0) return "Đã kết thúc";
 
@@ -112,7 +124,7 @@ createElectionButton.addEventListener("click", async () => {
     try {
         const accounts = await web3.eth.getAccounts();
         const gasPrice = await web3.eth.getGasPrice();
-        await contract.methods.createElection(electionName, electionTime).send({from: accounts[0], gas: 9000000, gasPrice: gasPrice});
+        await contract.methods.createElection(electionName, electionTime).send({from: accounts[0], gas: 3000000, gasPrice: gasPrice});
         alert("Cuộc bầu cử đã được tạo thành công");
     } catch (error) {
         console.error("Lỗi khi tạo cuộc bầu cử:", error);
@@ -182,11 +194,11 @@ addCandidateButton.addEventListener("click", async () => {
       const candidateName = document.getElementById("candidate-name").value;
       try {
         const gasPrice = await web3.eth.getGasPrice(); 
-        await contract.methods.createElection(electionName, electionTime).send({from: selectedAccount,gas: 900000,gasPrice: web3.utils.toWei("10", "gwei"),});
+        await contract.methods.addCandidate(candidateName , accounts[0]).send({from: accounts[0],gas: 900000,gasPrice: gasPrice});
         showCandidate();
         alert("Thêm ứng cử viên thành công!");  
       } catch (error) {
-        alert("Có lỗi xảy ra khi thêm sách!");
+        alert("Có lỗi xảy ra khi ứng cử vi!");
         console.log(error);
       }
   }
@@ -200,7 +212,7 @@ const handleDelete = async (candidate_id) => {
       const accounts = await web3.eth.getAccounts();
 
       const gasPrice = await web3.eth.getGasPrice();
-      await contract.methods.removeCandidate(candidate_id).send({from: accounts[0],gas: 9000000,gasPrice: gasPrice,
+      await contract.methods.removeCandidate(candidate_id).send({from: accounts[0],gas: 6000000,gasPrice: gasPrice,
       });
 
       alert("Xóa ứng cử viên thành công!");
@@ -223,7 +235,7 @@ const handUpdate = async (candidate_id, name) => {
         const accounts = await web3.eth.getAccounts();
         const gasPrice = await web3.eth.getGasPrice(); 
        
-        await contract.methods.updateCandidate(candidate_id, newname).send({ from: accounts[0], gas: 9000000, gasPrice: gasPrice });
+        await contract.methods.updateCandidate(candidate_id, newname).send({ from: accounts[0], gas: 6000000, gasPrice: gasPrice });
         showCandidate(); // Cập nhật danh sách ứng viên
         alert("ứng viên đã được cập nhật thành công!");
       } catch (error) {
@@ -300,20 +312,31 @@ showvoters.addEventListener("click", async () => {
 addVoterButton.addEventListener("click", async () => {
   if (window.ethereum) {
     try {
-      web3 = new Web3(window.ethereum);
-      contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+      // Khởi tạo Web3 và hợp đồng
+      const web3 = new Web3(window.ethereum);
+      const contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+      // Lấy tài khoản hiện tại
       const accounts = await web3.eth.getAccounts();
+      const selectedAccount = accounts[0]; // Chọn tài khoản đầu tiên
       const voterAddress = document.getElementById("voter-address").value;
       const voterName = document.getElementById("voter-name").value;
-
+      if (!voterAddress || !voterName) {
+        alert("Vui lòng nhập đầy đủ thông tin cử tri (địa chỉ và tên)!");
+        return;
+      }
+      // Lấy gas price
       const gasPrice = await web3.eth.getGasPrice();
-      await contract.methods.addValidVoter(voterAddress, voterName).send({from: accounts[0], gas: 9000000, gasPrice: gasPrice});
+      // Gửi yêu cầu tới hợp đồng
+      await contract.methods.addValidVoter(voterAddress, voterName).send({from: selectedAccount,gas: 3000000,gasPrice: gasPrice,});
       alert("Thêm cử tri thành công!");
-      showVoter(); // Cập nhật danh sách cử tri
+      // Cập nhật danh sách cử tri
+      showVoter(); 
     } catch (error) {
       alert("Có lỗi xảy ra khi thêm cử tri!");
       console.error(error);
     }
+  } else {
+    alert("MetaMask không được tìm thấy. Hãy kết nối với MetaMask.");
   }
 });
 
