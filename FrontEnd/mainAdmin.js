@@ -1,9 +1,12 @@
+//mainAdmin.js
 const connectButton = document.getElementById("connect-button");
 const walletAddress = document.getElementById("wallet-address");
 const showcandidates = document.getElementById("show-button");
 const showvoters = document.getElementById("show-button-voter");
 const addCandidateButton = document.getElementById("confirm-add-button");
 const addVoterButton = document.getElementById("confirm-add-voter-button");
+const createElectionButton = document.getElementById("createElectionButton");
+const endElectionButton = document.getElementById("end-election-button");
 
 let web3, contract;
 connectButton.addEventListener("click", async () => {
@@ -26,10 +29,12 @@ connectButton.addEventListener("click", async () => {
                 document.getElementById('add-button').style.display = 'block';
                 document.getElementById('show-button').style.display = 'block';
                 document.getElementById('show-button-voter').style.display = 'block';
-
+                document.getElementById("create-election-button").style.display = 'block'; // Tạo cuộc bầu cử
                 document.getElementById('add-voter-button').style.display = 'inline-block'; // Thêm cử tri
-
-            } else {
+                document.getElementById('end-election-button').style.display = 'block'; // Kết thúc cuộc bầu cử
+                document.getElementById("end-election-button").style.display = 'block';
+                setInterval(() => updateElectionInfo(contract), 1000);
+              } else {
                 alert("Bạn không có quyền admin");
             }
         } else {
@@ -41,6 +46,78 @@ connectButton.addEventListener("click", async () => {
 } else {
     console.log("Không phát hiện trình duyệt Ethereum. Vui lòng cài đặt MetaMask!");
 }
+});
+
+//kết thúc cuộc bầu cử
+async function updateElectionInfo() {
+  if (!contract) {
+      console.error("Contract chưa được kết nối!");
+      return;
+  }
+
+  try {
+      // Lấy thời gian còn lại và tên cuộc bầu cử từ hợp đồng
+      const [timeRemaining, electionName] = await contract.methods.getTimeRemaining().call();
+
+      if (timeRemaining > 0) {
+          // Nếu còn thời gian, hiển thị thời gian và tên cuộc bầu cử
+          const timeText = formatTimeRemaining(timeRemaining);
+          document.getElementById("election-time-list").textContent = `Cuộc bầu cử: ${electionName} | Thời gian còn lại: ${timeText}`;
+      } else {
+          // Nếu hết thời gian, gọi winnerName từ blockchain
+          const winner = await contract.methods.getWinnerName().call();
+          document.getElementById("election-time-list").textContent = `Cuộc bầu cử đã kết thúc. Người thắng: ${winner || "Không xác định"}`;
+      }
+  } catch (error) {
+      console.error("Lỗi khi cập nhật thông tin cuộc bầu cử:", error);
+  }
+}
+contract.events.ElectionEnded()
+    .on("data", async (event) => {
+        const winnerName = event.returnValues[0]; // Lấy tên người thắng từ sự kiện
+        document.getElementById("election-time-list").textContent = `Cuộc bầu cử đã kết thúc. Người thắng: ${winnerName}`;
+    })
+    .on("error", console.error);
+
+    
+function formatTimeRemaining(seconds) {
+  if (seconds <= 0) return "Đã kết thúc";
+
+  const days = Math.floor(seconds / (24 * 3600));
+  const hours = Math.floor((seconds % (24 * 3600)) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  return `${days} ngày ${hours} giờ ${minutes} phút ${secs} giây`;
+}
+
+
+//taoj cuoc bau cu
+createElectionButton.addEventListener("click", async () => {
+    if (!contract) {
+        alert("Vui lòng kết nối với MetaMask");
+        return;
+    }
+    const electionName = document.getElementById("election-name").value;
+    const electionTime = document.getElementById("election-time").value;
+    // Kiểm tra hợp lệ đầu vào
+    if (!electionName) {
+      alert("Vui lòng nhập tên cuộc bầu cử.");
+      return;
+    }
+    if (!electionTime || isNaN(electionTime) || electionTime <= 0) {
+        alert("Vui lòng nhập thời gian hợp lệ (phút).");
+        return;
+    }
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const gasPrice = await web3.eth.getGasPrice();
+        await contract.methods.createElection(electionName, electionTime).send({from: accounts[0], gas: 9000000, gasPrice: gasPrice});
+        alert("Cuộc bầu cử đã được tạo thành công");
+    } catch (error) {
+        console.error("Lỗi khi tạo cuộc bầu cử:", error);
+        alert("Đã xảy ra lỗi khi tạo cuộc bầu cử. Vui lòng thử lại.");
+    }
 });
 // hiển thị ứng cử viên
 showcandidates.addEventListener("click", async () => {
@@ -99,11 +176,13 @@ addCandidateButton.addEventListener("click", async () => {
   if(window.web3) {
       web3 = new Web3(web3.currentProvider);
       contract = await contract_instance(web3, CONTRACT_ABI, CONTRACT_ADDRESS);
+      console.log(contract.methods); // Xem tất cả các phương thức khả dụng
+
       const accounts = await web3.eth.getAccounts();
       const candidateName = document.getElementById("candidate-name").value;
       try {
         const gasPrice = await web3.eth.getGasPrice(); 
-        await contract.methods.addCandidate(candidateName, accounts[0]).send({ from: accounts[0], gas: 9000000 , gasPrice: gasPrice});
+        await contract.methods.createElection(electionName, electionTime).send({from: selectedAccount,gas: 900000,gasPrice: web3.utils.toWei("10", "gwei"),});
         showCandidate();
         alert("Thêm ứng cử viên thành công!");  
       } catch (error) {
@@ -293,3 +372,21 @@ const showCandidate = async () => {
 const showVoter = async () => {
   showvoters.click();
 };
+
+//hàm lấy thời gian còn lại
+function getTimeRemaining(endTime) {
+  const now = new Date().getTime();
+  const timeLeft = endTime - now; // endTime là timestamp của thời điểm kết thúc cuộc bầu cử
+
+  const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+  const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+  const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+
+  return {
+      days,
+      hours,
+      minutes,
+      seconds
+  };
+}

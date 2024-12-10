@@ -7,11 +7,63 @@ body {
     background-color: #F5F5DC;
 }
 
+/* --------------------------------------------- */
 
+#create-election-button{
+   
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+#create-election-button:hover{
+background-color: #0056b3;
+}
+#form-election {
+    display: none;
+    margin-top: 20px;
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: white;
+}
+
+#form-election input {
+    width: 90%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#form-election button {
+    padding: 8px 20px;
+    margin: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#cancel-election {
+    background-color: red;
+    color: white;
+    border: none;
+}
+#createElectionButton {
+    background-color: green;
+    color: white;
+    border: none;
+}
+/* ------------------------------------------------------------ */
 
 /* ứng cử viên */
 #connect-button, #add-button {
     padding: 10px 20px;
+    margin-left: 10px;
     font-size: 16px;
     background-color: #007bff;
     color: white;

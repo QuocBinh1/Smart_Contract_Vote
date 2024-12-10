@@ -80,6 +80,7 @@ showcandidates.addEventListener("click", async () => {
 
 
 
+
 //vote
 // Lưu danh sách ứng cử viên mà người dùng đã bỏ phiếu
 let votedCandidatesByAccount = {};

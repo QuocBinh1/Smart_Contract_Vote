@@ -1,5 +1,5 @@
 //constant.js
-CONTRACT_ADDRESS = "0x35F30057d1b72F849670A0499C3620e084b6B653";
+CONTRACT_ADDRESS = "0x6b01AD3A6B050Bf9e4F208cA0Be6b5f4334844A2";
 CONTRACT_ABI =[
 	{
 		"inputs": [],
@@ -63,19 +63,13 @@ CONTRACT_ABI =[
 			{
 				"indexed": false,
 				"internalType": "string",
-				"name": "title",
+				"name": "name",
 				"type": "string"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "start_date",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "end_date",
+				"name": "endTime",
 				"type": "uint256"
 			}
 		],
@@ -84,7 +78,14 @@ CONTRACT_ABI =[
 	},
 	{
 		"anonymous": false,
-		"inputs": [],
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "winnerName",
+				"type": "string"
+			}
+		],
 		"name": "ElectionEnded",
 		"type": "event"
 	},
@@ -267,12 +268,12 @@ CONTRACT_ABI =[
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "_title",
+				"name": "name",
 				"type": "string"
 			},
 			{
 				"internalType": "uint256",
-				"name": "_durationMinutes",
+				"name": "duration",
 				"type": "uint256"
 			}
 		],
@@ -369,6 +370,19 @@ CONTRACT_ABI =[
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "winner",
+				"type": "string"
+			}
+		],
+		"name": "endElection",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "getCandidates",
 		"outputs": [
@@ -400,12 +414,43 @@ CONTRACT_ABI =[
 	},
 	{
 		"inputs": [],
+		"name": "getElectionEndTime",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "getTimeRemaining",
 		"outputs": [
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getWinnerName",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -693,6 +738,19 @@ CONTRACT_ABI =[
 				"internalType": "uint256",
 				"name": "voterId",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "winnerName",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",

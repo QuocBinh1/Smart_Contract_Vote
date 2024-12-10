@@ -4,6 +4,7 @@ contract Election {
     bool public electionStarted;
     bool public electionEnded;
     uint public electionEndTime;
+    string public winnerName;
     address public admin; // Địa chỉ admin
     mapping (address => bool) public isValidVoter;
     uint public currentCandidateId = 0; // Biến trạng thái theo dõi ID ứng cử viên hiện tại
@@ -51,32 +52,41 @@ contract Election {
     address[] public voters;  
 
     // Các sự kiện
-    event ElectionCreated(string title, uint start_date, uint end_date);
+    event ElectionCreated(string name, uint256 endTime);
     event CandidateAdded(string name, uint candidate_id);
     event CandidateUpdated(uint candidate_id, string newName);
     event CandidateRemoved(uint candidate_id);
     event Voted(address voter, uint candidate_id);
-    event ElectionEnded();
+    event ElectionEnded(string winnerName);
     event ElectionResults(uint[] voteCounts);
     event VoterAdded(address voter, string name);
     event VoterRemoved(address voter);
     event VoterUpdated(address oldAddress, address newAddress);
 
+
+
     // 1. Tạo cuộc bầu cử
-    function createElection(string memory _title, uint _durationMinutes) public {
-        require(!electionStarted, "Election has already started.");
-        election = ElectionDetails({
-            title: _title,
-            start_date: block.timestamp,
-            end_date: block.timestamp + _durationMinutes * 1 minutes,
-            status: "Ongoing"
-        });
-        electionStarted = true;
-        electionEndTime = election.end_date;
-        emit ElectionCreated(_title, election.start_date, election.end_date);
+    function createElection(string memory name, uint256 duration) public onlyAdmin {
+        electionEndTime = block.timestamp + duration; // duration is in seconds
+        election.title = name; // Gán tên cho cuộc bầu cử
+        electionStarted = true; // Đánh dấu cuộc bầu cử bắt đầu
+        emit ElectionCreated(name, electionEndTime);
+    }
+    function endElection(string memory winner) public onlyAdmin {
+        require(block.timestamp >= electionEndTime, "Election is still ongoing");
+        winnerName = winner;
+        emit ElectionEnded(winner);
     }
 
-    // 2. Cập nhật tên cuộc bầu cử
+    function getElectionEndTime() public view returns (uint256) {
+        return electionEndTime;
+    }
+
+    function getWinnerName() public view returns (string memory) {
+        return winnerName;
+    }
+    
+    // // 2. Cập nhật tên cuộc bầu cử
     function updateElectionTitle(string memory _newTitle) public {
         require(electionStarted, "Election has not started.");
         election.title = _newTitle;
@@ -188,25 +198,32 @@ contract Election {
         emit Voted(msg.sender, _candidateId);
     }
     // 9. Kết thúc cuộc bầu cử và công bố kết quả
-    function endElection() public {
-        require(!electionEnded, "Election has already ended.");
-        electionEnded = true;
-        uint[] memory results = new uint[](candidates.length);
+    function endElection() public onlyAdmin{
+        require(block.timestamp >= electionEndTime, "Election is still ongoing");
+        require(!electionEnded, "Election has already ended");
+
+        uint maxVotes = 0;
+        string memory winningCandidate;
+        // Tìm ứng viên có số phiếu cao nhất
         for (uint i = 0; i < candidates.length; i++) {
-            results[i] = candidates[i].vote_count;
+            if (candidates[i].vote_count > maxVotes) {
+                maxVotes = candidates[i].vote_count;
+                winningCandidate = candidates[i].name;
+            }
         }
-        emit ElectionEnded();
-        emit ElectionResults(results);
+        winnerName = winningCandidate; // Gán tên người thắng
+        electionEnded = true;
+
+        emit ElectionEnded(winnerName); // Phát sự kiện với tên người thắng
     }
-    // 10. Quản lý thời gian bầu cử
-    function getTimeRemaining() public view returns (uint) {
+    
+    // 10. Quản lý thời gian bầu cử và lấy thêm tên cuộc bầu cử
+    function getTimeRemaining() public view returns (uint, string memory) {
         if (block.timestamp >= electionEndTime) {
-            return 0;
+            return (0, election.title); // Trả về thời gian còn lại là 0 và tên cuộc bầu cử
         }
-        return electionEndTime - block.timestamp;
+        return (electionEndTime - block.timestamp, election.title); // Trả về thời gian còn lại và tên cuộc bầu cử
     }
-
-
     // 11. Lấy thông tin ứng cử viên
     function getCandidates() public view returns (Candidate[] memory) {
         return candidates;

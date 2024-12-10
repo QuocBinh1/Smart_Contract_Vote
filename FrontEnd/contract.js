@@ -1,18 +1,49 @@
 //contract.js
+let instance   ; 
 async function contract_instance(web3 , abi , address) {
 	return new web3.eth.Contract(abi, address);;
 }
-
-//-------------------tạo cuộc bầu cử--------------------------------------------------------------------------------
+//-------------------quản lý time--------------------------------------------------------------------------------
+//show bầu cử 
+async function getTimeRemaining(instance) {
+    return await instance.methods.getTimeRemaining().call();
+}
+//tạo cuộc bầu cử
 async function createElection(instance, name, time, fromAddress) {
+    return await instance.methods.createElection(name, time).send({ from: fromAddress });
+}
+//sửa cuộc bầu cử
+async function updateElectionInfo(contract) {
     try {
-        // Gọi phương thức Solidity `createElection` với tên và thời gian
-        const transaction = await instance.methods.createElection(name, time).send({ from: fromAddress });
-        console.log('Cuộc bầu cử được tạo thành công', transaction);
+        const result = await contract.methods.getTimeRemaining().call();
+        console.log("Kết quả getTimeRemaining:", result);
+        const timeRemaining = result[0];
+        const electionName = result[1];
+
+        if (timeRemaining > 0) {
+            const timeText = formatTimeRemaining(Number(timeRemaining));
+            document.getElementById("election-time-list").textContent = `Cuộc bầu cử: ${electionName} | Thời gian còn lại: ${timeText}`;
+        } else {
+            const winner = await contract.methods.getWinnerName().call();
+            document.getElementById("election-time-list").textContent = `Cuộc bầu cử đã kết thúc. Người thắng: ${winner}`;
+        }
     } catch (error) {
-        console.error('Lỗi khi tạo cuộc bầu cử:', error);
+        console.error("Lỗi khi cập nhật thông tin cuộc bầu cử:", error);
     }
 }
+
+
+function formatTimeRemaining(seconds) {
+    const days = Math.floor(seconds / (24 * 3600));
+    const hours = Math.floor((seconds % (24 * 3600)) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${days} ngày ${hours} giờ ${minutes} phút ${secs} giây`;
+}
+
+// Cập nhật mỗi giây
+setInterval(() => updateElectionInfo(contract), 1000);
+
 
 //------------------------------------------------------------------------------------------------------------
 
@@ -65,3 +96,4 @@ async function removeVoterById(instance, id, form) {
 }
 
 //------------------------------------------------------------------------------------------------------------
+
