@@ -182,7 +182,7 @@ contract Election {
         // Xóa ID cử tri từ mapping voterIds
         delete voterIds[voterAddress];
         emit VoterRemoved(voterAddress);
-}
+    }
 
     // 8. Bỏ phiếu
     function vote(uint _candidateId) public {

@@ -15,6 +15,8 @@ document.getElementById('add-button').addEventListener('click', function () {
 document.getElementById('cancel-button').addEventListener('click', function () {
     document.getElementById('add-candidate-form').style.display = 'none';
 });
+
+
 //cử tri
 
 
