@@ -1,5 +1,7 @@
 xây dựng dự án SmartContract + Web3 tạo 1 trang web bầu cử gồm các chức năng : 
+
 -ADMIN
+
 + thêm cuộc bầu cử
 + thêm ứng cử viên
 + thêm cử tri
@@ -7,7 +9,9 @@ xây dựng dự án SmartContract + Web3 tạo 1 trang web bầu cử gồm cá
 + hiển thị danh sách cử tri
 + kết thúc cuộc bầu cử
 + phân quyền
++ 
 -User:
+
 + phần quyền
 + vote
 + mỗi cử tri được vote 3 phiếu , không thể vote 2 phiếu cho 1 ứng cử viên 
